@@ -10,27 +10,56 @@ describe('TodoService Unit Tests', () => {
         service.todos = [];
     });
 
+   
     test('should add a new todo', () => {
         // TODO: Call the addTodo method with some text.
         // Then, assert that the service's todos array has a length of 1.
         // Assert that the text of the first todo matches the input text.
+        text = "Some text"
+        service.addTodo("Some text")
+        expect(service.todos.length).toBe(1);
+        expect(service.todos[0].text).toMatch(text);
     });
 
-    test('should toggle the completed state of a todo', () => {
-        // TODO: First, add a todo.
-        // Then, get its ID and call the toggleTodoComplete method.
-        // Assert that the 'completed' property of that todo is now true.
-        // Call toggleTodoComplete again and assert that it's false.
+  test('should toggle the completed state of a todo', () => {
+        // 1. Thêm một todo
+        service.addTodo("Learn Testing");
+        
+        // Lấy ID của todo vừa thêm
+        const id = service.todos[0].id;
+
+        // 2. Gọi hàm toggleTodoComplete lần đầu
+        service.toggleTodoComplete(id);
+        
+        // Kiểm tra xem trạng thái 'completed' đã chuyển thành true chưa
+        expect(service.todos[0].completed).toBe(true);
+
+        // 3. Gọi hàm toggleTodoComplete lần nữa
+        service.toggleTodoComplete(id);
+        
+        // Kiểm tra xem trạng thái đã quay về false chưa
+        expect(service.todos[0].completed).toBe(false);
     });
 
     test('should remove a todo', () => {
-        // TODO: Add a todo.
-        // Get its ID and call the removeTodo method.
-        // Assert that the service's todos array is now empty (length of 0).
+        // 1. Thêm một todo
+        service.addTodo("Task to be removed");
+        
+        // Lấy ID của todo đó
+        const id = service.todos[0].id;
+
+        // 2. Gọi hàm removeTodo để xóa
+        service.removeTodo(id);
+
+        // 3. Kiểm tra xem mảng todos có trống (độ dài = 0) không
+        expect(service.todos.length).toBe(0);
     });
 
     test('should not add a todo if text is empty', () => {
-        // TODO: Call addTodo with an empty string.
-        // Assert that the todos array still has a length of 0.
+        // 1. Gọi hàm addTodo với chuỗi rỗng
+        service.addTodo("");
+
+        // 2. Kiểm tra xem mảng todos vẫn giữ nguyên độ dài là 0
+        expect(service.todos.length).toBe(0);
     });
 });
