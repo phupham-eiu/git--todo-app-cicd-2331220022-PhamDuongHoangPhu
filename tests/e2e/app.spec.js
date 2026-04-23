@@ -1,35 +1,48 @@
 const { test, expect, _electron: electron } = require('@playwright/test');
 
 test('End-to-end user workflow', async () => {
-    // Launch the Electron app
+    // Khởi chạy ứng dụng Electron
     const electronApp = await electron.launch({ args: ['.'] });
     const window = await electronApp.firstWindow();
 
     const taskText = 'My new E2E test task';
 
-    // --- TODO: Task 1: Add a new todo item ---
-    // 1. Find the input field (use a locator like window.locator('#todo-input')).
-    // 2. Type the `taskText` into it.
-    // 3. Find and click the "Add" button.
+    // --- Task 1: Thêm một todo item mới ---
+    // Tìm ô input và nhập nội dung
+    const input = window.locator('#todo-input');
+    await input.fill(taskText);
+    
+    // Tìm và nhấn nút Add
+    const addButton = window.locator('#add-todo-btn');
+    await addButton.click();
 
 
-    // --- TODO: Task 2: Verify the todo item was added ---
-    // 1. Locate the new todo item in the list. A good locator might be `window.locator('.todo-item')`.
-    // 2. Assert that its text content contains the `taskText`.
+    // --- Task 2: Xác minh todo item đã được thêm ---
+    // Định vị item đầu tiên trong danh sách
+    const todoItem = window.locator('.todo-item').first();
+    
+    // Kiểm tra xem text có khớp với nội dung đã nhập không
+    await expect(todoItem).toContainText(taskText);
     
 
-    // --- TODO: Task 3: Mark the todo item as complete ---
-    // 1. Find the checkbox within the new todo item.
-    // 2. Click the checkbox.
-    // 3. Assert that the todo item now has the 'completed' class.
+    // --- Task 3: Đánh dấu hoàn thành (Mark as complete) ---
+    // Tìm checkbox bên trong todo item và click
+    const checkbox = todoItem.locator('input[type="checkbox"]');
+    await checkbox.click();
+
+    // Kiểm tra xem class 'completed' đã được thêm vào li hay chưa
+    await expect(todoItem).toHaveClass(/completed/);
 
 
-    // --- TODO: Task 4: Delete the todo item ---
-    // 1. Find the delete button within the todo item.
-    // 2. Click the delete button.
-    // 3. Assert that the todo item is no longer visible on the page.
+    // --- Task 4: Xóa todo item ---
+    // Tìm nút delete bên trong todo item và click
+    const deleteButton = todoItem.locator('.delete-btn');
+    await deleteButton.click();
+
+    // Xác nhận rằng item đó không còn tồn tại trên trang
+    await expect(todoItem).toBeHidden();
 
 
-    // Close the app
+    // Đóng ứng dụng
     await electronApp.close();
 });
